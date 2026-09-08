@@ -1250,49 +1250,618 @@
 </section>
 
 
-        <section
-          id="page-efile"
-          class="page"
+<!-- ======================================
+     e-FILES
+     ====================================== -->
+
+<section
+  id="page-efile"
+  class="page"
+>
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        Home / e-Files
+      </div>
+
+      <h1>e-Files</h1>
+
+      <p>
+        Create, view and manage electronic files.
+      </p>
+
+    </div>
+
+    <button
+      id="newFileButton"
+      class="login-button"
+      type="button"
+    >
+      + New e-File
+    </button>
+
+  </div>
+
+
+  <!-- ======================================
+       FILE STATISTICS
+       ====================================== -->
+
+  <div class="dashboard-stats">
+
+    <div class="stat-card">
+
+      <div class="stat-icon file-icon">
+        ▣
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Total Files
+        </span>
+
+        <strong id="totalFiles">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon note-icon">
+        ◷
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Draft Files
+        </span>
+
+        <strong id="draftFiles">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon receipt-icon">
+        →
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Under Process
+        </span>
+
+        <strong id="processingFiles">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon draft-icon">
+        ✓
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Approved
+        </span>
+
+        <strong id="approvedFiles">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       FILE REGISTER
+       ====================================== -->
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>e-File Register</h2>
+
+        <p>
+          Electronic files currently registered in the training office.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="receipt-toolbar">
+
+      <input
+        type="text"
+        id="fileSearch"
+        class="search-input"
+        placeholder="Search by file number, subject or section..."
+      >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>File No.</th>
+
+            <th>Date</th>
+
+            <th>Subject</th>
+
+            <th>Section</th>
+
+            <th>Receipt</th>
+
+            <th>Status</th>
+
+            <th>Current User</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="filesTableBody">
+
+          <!-- e-Files will be loaded here -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       NEW e-FILE FORM
+       ====================================== -->
+
+  <div
+    id="fileFormPanel"
+    class="panel hidden"
+  >
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>Create New e-File</h2>
+
+        <p>
+          Create an electronic file manually or from an incoming receipt.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <form id="fileForm">
+
+
+      <div class="form-grid">
+
+
+        <!-- FILE NUMBER -->
+
+        <div class="form-group">
+
+          <label for="fileNo">
+            File Number
+          </label>
+
+          <input
+            type="text"
+            id="fileNo"
+            placeholder="e.g. HTE/EDU/2026/002"
+            required
+          >
+
+        </div>
+
+
+        <!-- FILE DATE -->
+
+        <div class="form-group">
+
+          <label for="fileDate">
+            File Date
+          </label>
+
+          <input
+            type="date"
+            id="fileDate"
+            required
+          >
+
+        </div>
+
+
+        <!-- SECTION -->
+
+        <div class="form-group">
+
+          <label for="fileSection">
+            Section
+          </label>
+
+          <input
+            type="text"
+            id="fileSection"
+            placeholder="e.g. Education Section"
+            required
+          >
+
+        </div>
+
+
+        <!-- CATEGORY -->
+
+        <div class="form-group">
+
+          <label for="fileCategory">
+            Category
+          </label>
+
+          <select id="fileCategory">
+
+            <option value="General">
+              General
+            </option>
+
+            <option value="Administration">
+              Administration
+            </option>
+
+            <option value="Education">
+              Education
+            </option>
+
+            <option value="Finance">
+              Finance
+            </option>
+
+            <option value="Establishment">
+              Establishment
+            </option>
+
+            <option value="IT">
+              Information Technology
+            </option>
+
+            <option value="Training">
+              Training
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- PRIORITY -->
+
+        <div class="form-group">
+
+          <label for="filePriority">
+            Priority
+          </label>
+
+          <select id="filePriority">
+
+            <option value="Normal">
+              Normal
+            </option>
+
+            <option value="High">
+              High
+            </option>
+
+            <option value="Urgent">
+              Urgent
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- LINKED RECEIPT -->
+
+        <div class="form-group">
+
+          <label for="fileReceipt">
+
+            Link Receipt / Dak
+
+          </label>
+
+          <select id="fileReceipt">
+
+            <option value="">
+              -- No Receipt --
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- SUBJECT -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="fileSubject">
+            Subject
+          </label>
+
+          <input
+            type="text"
+            id="fileSubject"
+            placeholder="Enter file subject"
+            required
+          >
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="fileDescription">
+            Description / Remarks
+          </label>
+
+          <textarea
+            id="fileDescription"
+            rows="4"
+            placeholder="Enter brief details about this file..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <!-- FORM ACTIONS -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          id="cancelFileButton"
+          class="text-button"
         >
+          Cancel
+        </button>
 
-          <div class="page-header">
+        <button
+          type="submit"
+          class="login-button"
+        >
+          Create e-File
+        </button>
 
-            <div>
+      </div>
 
-              <div class="breadcrumb">
-                Home / e-Files
-              </div>
 
-              <h1>e-Files</h1>
+      <p
+        id="fileFormMessage"
+        class="login-message"
+      ></p>
 
-              <p>
-                Create and manage electronic files.
-              </p>
+    </form>
 
-            </div>
+  </div>
 
-          </div>
 
-          <div class="empty-module">
+  <!-- ======================================
+       FILE DETAILS
+       ====================================== -->
 
-            <div class="empty-icon">
-              ▣
-            </div>
+  <div
+    id="fileDetailsPanel"
+    class="panel hidden"
+  >
 
-            <h2>e-File Module</h2>
+    <div class="panel-header">
 
-            <p>
-              This module will simulate creation, processing
-              and movement of electronic files.
-            </p>
+      <div>
 
-            <span class="module-label">
-              MODULE UNDER DEVELOPMENT
-            </span>
+        <div class="breadcrumb">
+          e-Files / File Details
+        </div>
 
-          </div>
+        <h2 id="fileDetailsTitle">
+          e-File Details
+        </h2>
 
-        </section>
+        <p id="fileDetailsSubject">
+          --
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        id="closeFileDetailsButton"
+        class="text-button"
+      >
+        Close
+      </button>
+
+    </div>
+
+
+    <div class="file-details-grid">
+
+
+      <div class="detail-item">
+
+        <span>
+          File Number
+        </span>
+
+        <strong id="detailFileNo">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          File Date
+        </span>
+
+        <strong id="detailFileDate">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Section
+        </span>
+
+        <strong id="detailFileSection">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Priority
+        </span>
+
+        <strong id="detailFilePriority">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Status
+        </span>
+
+        <strong id="detailFileStatus">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Current User
+        </span>
+
+        <strong id="detailFileUser">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Linked Receipt
+        </span>
+
+        <strong id="detailFileReceipt">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Created By
+        </span>
+
+        <strong id="detailFileCreator">
+          --
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="file-description">
+
+      <h3>
+        Description / Remarks
+      </h3>
+
+      <p id="detailFileDescription">
+        --
+      </p>
+
+    </div>
+
+
+  </div>
+
+</section>
 
 
         <section
@@ -1638,6 +2207,7 @@
 
   <script src="user-management.js"></script>
   <script src="receipt-management.js"></script>
+  <script src="efile-management.js"></script>
   <script src="script.js"></script>
 
 </body>
