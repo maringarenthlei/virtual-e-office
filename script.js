@@ -475,6 +475,625 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   }
+     /* ==========================================
+     RECEIPT / DAK MODULE
+     ========================================== */
+
+  function loadReceipts() {
+
+    const tableBody =
+      document.getElementById("receiptsTableBody");
+
+    if (!tableBody) {
+      return;
+    }
+
+    if (
+      typeof VirtualEOfficeReceipts === "undefined"
+    ) {
+      console.error(
+        "Receipt Management module not loaded."
+      );
+      return;
+    }
+
+
+    const receipts =
+      VirtualEOfficeReceipts.getReceipts();
+
+
+    tableBody.innerHTML = "";
+
+
+    /* ==========================================
+       STATISTICS
+       ========================================== */
+
+    const totalElement =
+      document.getElementById("totalReceipts");
+
+    const newElement =
+      document.getElementById("newReceipts");
+
+    const linkedElement =
+      document.getElementById("linkedReceipts");
+
+
+    if (totalElement) {
+      totalElement.textContent =
+        receipts.length;
+    }
+
+
+    if (newElement) {
+
+      newElement.textContent =
+        receipts.filter(
+          function (receipt) {
+            return receipt.status === "new";
+          }
+        ).length;
+
+    }
+
+
+    if (linkedElement) {
+
+      linkedElement.textContent =
+        receipts.filter(
+          function (receipt) {
+            return receipt.status === "linked";
+          }
+        ).length;
+
+    }
+
+
+    /* ==========================================
+       EMPTY STATE
+       ========================================== */
+
+    if (receipts.length === 0) {
+
+      const row =
+        document.createElement("tr");
+
+      row.innerHTML = `
+        <td colspan="7" style="text-align:center;">
+          No receipts registered.
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+
+      return;
+    }
+
+
+    /* ==========================================
+       DISPLAY RECEIPTS
+       ========================================== */
+
+    receipts.forEach(
+      function (receipt) {
+
+        const row =
+          document.createElement("tr");
+
+
+        let statusText =
+          "New";
+
+        let statusClass =
+          "pending";
+
+
+        if (receipt.status === "linked") {
+
+          statusText =
+            "Linked";
+
+          statusClass =
+            "approved";
+
+        }
+
+
+        row.innerHTML = `
+
+          <td>
+            <strong>
+              ${receipt.receiptNo}
+            </strong>
+          </td>
+
+          <td>
+            ${receipt.receiptDate}
+          </td>
+
+          <td>
+            ${receipt.from}
+          </td>
+
+          <td>
+            ${receipt.subject}
+          </td>
+
+          <td>
+            ${receipt.priority}
+          </td>
+
+          <td>
+            <span class="status ${statusClass}">
+              ${statusText}
+            </span>
+          </td>
+
+          <td>
+
+            <button
+              type="button"
+              class="text-button receipt-view-button"
+              data-receipt-id="${receipt.id}"
+            >
+              View
+            </button>
+
+          </td>
+
+        `;
+
+
+        tableBody.appendChild(row);
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     SHOW RECEIPT FORM
+     ========================================== */
+
+  function showReceiptForm() {
+
+    const formPanel =
+      document.getElementById(
+        "receiptFormPanel"
+      );
+
+    if (!formPanel) {
+      return;
+    }
+
+
+    formPanel.classList.remove(
+      "hidden"
+    );
+
+
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    const dateInput =
+      document.getElementById(
+        "receiptDate"
+      );
+
+
+    if (
+      dateInput &&
+      !dateInput.value
+    ) {
+
+      dateInput.value =
+        today;
+
+    }
+
+
+    formPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }
+
+
+  /* ==========================================
+     HIDE RECEIPT FORM
+     ========================================== */
+
+  function hideReceiptForm() {
+
+    const formPanel =
+      document.getElementById(
+        "receiptFormPanel"
+      );
+
+
+    if (formPanel) {
+
+      formPanel.classList.add(
+        "hidden"
+      );
+
+    }
+
+  }
+
+
+  /* ==========================================
+     SAVE RECEIPT
+     ========================================== */
+
+  function saveNewReceipt() {
+
+    if (
+      typeof VirtualEOfficeReceipts ===
+      "undefined"
+    ) {
+
+      return;
+
+    }
+
+
+    const username =
+      localStorage.getItem(
+        "virtualEOfficeUsername"
+      );
+
+
+    const result =
+      VirtualEOfficeReceipts.addReceipt({
+
+        receiptNo:
+          document.getElementById(
+            "receiptNo"
+          ).value,
+
+        receiptDate:
+          document.getElementById(
+            "receiptDate"
+          ).value,
+
+        receiptType:
+          document.getElementById(
+            "receiptType"
+          ).value,
+
+        from:
+          document.getElementById(
+            "receiptFrom"
+          ).value,
+
+        toSection:
+          document.getElementById(
+            "receiptToSection"
+          ).value,
+
+        subject:
+          document.getElementById(
+            "receiptSubject"
+          ).value,
+
+        description:
+          document.getElementById(
+            "receiptDescription"
+          ).value,
+
+        priority:
+          document.getElementById(
+            "receiptPriority"
+          ).value,
+
+        createdBy:
+          username
+
+      });
+
+
+    const message =
+      document.getElementById(
+        "receiptFormMessage"
+      );
+
+
+    if (!result.success) {
+
+      if (message) {
+
+        message.textContent =
+          result.message;
+
+        message.style.color =
+          "#b91c1c";
+
+      }
+
+      return;
+
+    }
+
+
+    if (message) {
+
+      message.textContent =
+        "Receipt registered successfully.";
+
+      message.style.color =
+        "#15803d";
+
+    }
+
+
+    document
+      .getElementById("receiptForm")
+      .reset();
+
+
+    loadReceipts();
+
+
+    setTimeout(
+      function () {
+
+        hideReceiptForm();
+
+        if (message) {
+          message.textContent = "";
+        }
+
+      },
+      1000
+    );
+
+  }
+
+
+  /* ==========================================
+     RECEIPT SEARCH
+     ========================================== */
+
+  function searchReceipts() {
+
+    const searchInput =
+      document.getElementById(
+        "receiptSearch"
+      );
+
+
+    if (!searchInput) {
+      return;
+    }
+
+
+    const searchTerm =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    const tableBody =
+      document.getElementById(
+        "receiptsTableBody"
+      );
+
+
+    if (!tableBody) {
+      return;
+    }
+
+
+    const receipts =
+      VirtualEOfficeReceipts.getReceipts();
+
+
+    const filtered =
+      receipts.filter(
+        function (receipt) {
+
+          return (
+
+            receipt.receiptNo
+              .toLowerCase()
+              .includes(searchTerm)
+
+            ||
+
+            receipt.subject
+              .toLowerCase()
+              .includes(searchTerm)
+
+            ||
+
+            receipt.from
+              .toLowerCase()
+              .includes(searchTerm)
+
+          );
+
+        }
+      );
+
+
+    tableBody.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+      const row =
+        document.createElement("tr");
+
+      row.innerHTML = `
+        <td colspan="7" style="text-align:center;">
+          No matching receipts found.
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+
+      return;
+
+    }
+
+
+    filtered.forEach(
+      function (receipt) {
+
+        const row =
+          document.createElement("tr");
+
+
+        const statusText =
+          receipt.status === "linked"
+            ? "Linked"
+            : "New";
+
+
+        const statusClass =
+          receipt.status === "linked"
+            ? "approved"
+            : "pending";
+
+
+        row.innerHTML = `
+
+          <td>
+            <strong>
+              ${receipt.receiptNo}
+            </strong>
+          </td>
+
+          <td>
+            ${receipt.receiptDate}
+          </td>
+
+          <td>
+            ${receipt.from}
+          </td>
+
+          <td>
+            ${receipt.subject}
+          </td>
+
+          <td>
+            ${receipt.priority}
+          </td>
+
+          <td>
+            <span class="status ${statusClass}">
+              ${statusText}
+            </span>
+          </td>
+
+          <td>
+
+            <button
+              type="button"
+              class="text-button receipt-view-button"
+              data-receipt-id="${receipt.id}"
+            >
+              View
+            </button>
+
+          </td>
+
+        `;
+
+
+        tableBody.appendChild(row);
+
+      }
+    );
+
+  }
+
+
+  /* ==========================================
+     RECEIPT EVENT HANDLERS
+     ========================================== */
+
+  const newReceiptButton =
+    document.getElementById(
+      "newReceiptButton"
+    );
+
+
+  if (newReceiptButton) {
+
+    newReceiptButton.addEventListener(
+      "click",
+      showReceiptForm
+    );
+
+  }
+
+
+  const cancelReceiptButton =
+    document.getElementById(
+      "cancelReceiptButton"
+    );
+
+
+  if (cancelReceiptButton) {
+
+    cancelReceiptButton.addEventListener(
+      "click",
+      hideReceiptForm
+    );
+
+  }
+
+
+  const receiptForm =
+    document.getElementById(
+      "receiptForm"
+    );
+
+
+  if (receiptForm) {
+
+    receiptForm.addEventListener(
+      "submit",
+      function (event) {
+
+        event.preventDefault();
+
+        saveNewReceipt();
+
+      }
+    );
+
+  }
+
+
+  const receiptSearch =
+    document.getElementById(
+      "receiptSearch"
+    );
+
+
+  if (receiptSearch) {
+
+    receiptSearch.addEventListener(
+      "input",
+      searchReceipts
+    );
+
+  }
+
+
+  /* ==========================================
+     INITIAL LOAD
+     ========================================== */
+
+  loadReceipts();
      loadTrainingUsers();
 
 });
