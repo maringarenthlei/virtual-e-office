@@ -398,6 +398,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
   }
-
-
 });
