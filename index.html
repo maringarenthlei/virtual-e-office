@@ -831,49 +831,423 @@
              FUTURE MODULE PAGES
              ====================================== -->
 
-        <section
-          id="page-receipt"
-          class="page"
+<!-- ======================================
+     RECEIPT / DAK
+     ====================================== -->
+
+<section
+  id="page-receipt"
+  class="page"
+>
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        Home / Receipt / Dak
+      </div>
+
+      <h1>Receipt / Dak</h1>
+
+      <p>
+        Register and manage incoming correspondence.
+      </p>
+
+    </div>
+
+    <button
+      id="newReceiptButton"
+      class="login-button"
+      type="button"
+    >
+      + New Receipt
+    </button>
+
+  </div>
+
+
+  <!-- ======================================
+       RECEIPT STATISTICS
+       ====================================== -->
+
+  <div class="dashboard-stats">
+
+    <div class="stat-card">
+
+      <div class="stat-icon receipt-icon">
+        ✉
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Total Receipts
+        </span>
+
+        <strong id="totalReceipts">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon note-icon">
+        !
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          New Receipts
+        </span>
+
+        <strong id="newReceipts">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon file-icon">
+        ▣
+      </div>
+
+      <div class="stat-info">
+
+        <span>
+          Linked to e-Files
+        </span>
+
+        <strong id="linkedReceipts">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       RECEIPT LIST
+       ====================================== -->
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>Receipt / Dak Register</h2>
+
+        <p>
+          Incoming correspondence registered in the training office.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="receipt-toolbar">
+
+      <input
+        type="text"
+        id="receiptSearch"
+        class="search-input"
+        placeholder="Search by receipt number, subject or sender..."
+      >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Receipt No.</th>
+
+            <th>Date</th>
+
+            <th>From</th>
+
+            <th>Subject</th>
+
+            <th>Priority</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="receiptsTableBody">
+
+          <!-- Receipts will be loaded here -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       NEW RECEIPT FORM
+       ====================================== -->
+
+  <div
+    id="receiptFormPanel"
+    class="panel hidden"
+  >
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>Register New Receipt</h2>
+
+        <p>
+          Enter the details of the incoming correspondence.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <form id="receiptForm">
+
+
+      <!-- RECEIPT NUMBER -->
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label for="receiptNo">
+            Receipt Number
+          </label>
+
+          <input
+            type="text"
+            id="receiptNo"
+            placeholder="e.g. HTE/REC/2026/003"
+            required
+          >
+
+        </div>
+
+
+        <!-- RECEIPT DATE -->
+
+        <div class="form-group">
+
+          <label for="receiptDate">
+            Receipt Date
+          </label>
+
+          <input
+            type="date"
+            id="receiptDate"
+            required
+          >
+
+        </div>
+
+
+        <!-- RECEIPT TYPE -->
+
+        <div class="form-group">
+
+          <label for="receiptType">
+            Receipt Type
+          </label>
+
+          <select id="receiptType">
+
+            <option value="Letter">
+              Letter
+            </option>
+
+            <option value="Office Memorandum">
+              Office Memorandum
+            </option>
+
+            <option value="Government Order">
+              Government Order
+            </option>
+
+            <option value="Circular">
+              Circular
+            </option>
+
+            <option value="Email">
+              Email
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- PRIORITY -->
+
+        <div class="form-group">
+
+          <label for="receiptPriority">
+            Priority
+          </label>
+
+          <select id="receiptPriority">
+
+            <option value="Normal">
+              Normal
+            </option>
+
+            <option value="High">
+              High
+            </option>
+
+            <option value="Urgent">
+              Urgent
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- FROM -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="receiptFrom">
+            From
+          </label>
+
+          <input
+            type="text"
+            id="receiptFrom"
+            placeholder="Name / Office / Department"
+            required
+          >
+
+        </div>
+
+
+        <!-- TO SECTION -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="receiptToSection">
+            To Section
+          </label>
+
+          <input
+            type="text"
+            id="receiptToSection"
+            placeholder="e.g. Education Section"
+            required
+          >
+
+        </div>
+
+
+        <!-- SUBJECT -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="receiptSubject">
+            Subject
+          </label>
+
+          <input
+            type="text"
+            id="receiptSubject"
+            placeholder="Enter subject of correspondence"
+            required
+          >
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="receiptDescription">
+            Description / Remarks
+          </label>
+
+          <textarea
+            id="receiptDescription"
+            rows="4"
+            placeholder="Enter brief details of the correspondence..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <!-- FORM ACTIONS -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          id="cancelReceiptButton"
+          class="text-button"
         >
+          Cancel
+        </button>
 
-          <div class="page-header">
+        <button
+          type="submit"
+          class="login-button"
+        >
+          Save Receipt
+        </button>
 
-            <div>
+      </div>
 
-              <div class="breadcrumb">
-                Home / Receipt / Dak
-              </div>
 
-              <h1>Receipt / Dak</h1>
+      <p
+        id="receiptFormMessage"
+        class="login-message"
+      ></p>
 
-              <p>
-                Manage incoming government correspondence.
-              </p>
+    </form>
 
-            </div>
+  </div>
 
-          </div>
-
-          <div class="empty-module">
-
-            <div class="empty-icon">
-              ✉
-            </div>
-
-            <h2>Receipt / Dak Module</h2>
-
-            <p>
-              This training module will allow you to receive,
-              register, view and process incoming receipts.
-            </p>
-
-            <span class="module-label">
-              MODULE UNDER DEVELOPMENT
-            </span>
-
-          </div>
-
-        </section>
+</section>
 
 
         <section
