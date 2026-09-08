@@ -1,4 +1,3 @@
-```javascript
 /* ==========================================
    VIRTUAL e-OFFICE
    Training Simulator
