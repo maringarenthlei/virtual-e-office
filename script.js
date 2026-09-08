@@ -398,4 +398,83 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
   }
+     /* ==========================================
+     TRAINING USERS
+     ========================================== */
+
+  function loadTrainingUsers() {
+
+    const tableBody =
+      document.getElementById("trainingUsersTableBody");
+
+    if (!tableBody) {
+      return;
+    }
+
+    if (
+      typeof VirtualEOfficeUsers === "undefined"
+    ) {
+      console.error(
+        "Training User Management module not loaded."
+      );
+      return;
+    }
+
+    const users =
+      VirtualEOfficeUsers.getUsers();
+
+    tableBody.innerHTML = "";
+
+    users.forEach(function (user) {
+
+      const row =
+        document.createElement("tr");
+
+      const roleName =
+        VirtualEOfficeUsers.getRoleName(user.role);
+
+      const statusText =
+        user.status === "active"
+          ? "Active"
+          : "Inactive";
+
+      row.innerHTML = `
+        <td>${user.id}</td>
+
+        <td>
+          <strong>${user.name}</strong>
+        </td>
+
+        <td>${roleName}</td>
+
+        <td>${user.department}</td>
+
+        <td>
+          <span class="status ${
+            user.status === "active"
+              ? "approved"
+              : "pending"
+          }">
+            ${statusText}
+          </span>
+        </td>
+
+        <td>
+          <button
+            type="button"
+            class="text-button"
+            disabled
+          >
+            Edit
+          </button>
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+
+    });
+
+  }
+     loadTrainingUsers();
+
 });
