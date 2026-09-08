@@ -1095,5 +1095,721 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadReceipts();
      loadTrainingUsers();
+/* ======================================
+   e-FILE MANAGEMENT
+   ====================================== */
 
+function loadEFiles() {
+
+  const files = VirtualEOfficeFiles.getFiles();
+
+  const tableBody = document.getElementById("filesTableBody");
+
+  const totalFiles = document.getElementById("totalFiles");
+  const draftFiles = document.getElementById("draftFiles");
+  const processingFiles = document.getElementById("processingFiles");
+  const approvedFiles = document.getElementById("approvedFiles");
+
+  if (!tableBody) {
+    return;
+  }
+
+  /* ======================================
+     STATISTICS
+     ====================================== */
+
+  if (totalFiles) {
+    totalFiles.textContent = files.length;
+  }
+
+  if (draftFiles) {
+    draftFiles.textContent =
+      files.filter(file => file.status === "draft").length;
+  }
+
+  if (processingFiles) {
+    processingFiles.textContent =
+      files.filter(file => file.status === "under-process").length;
+  }
+
+  if (approvedFiles) {
+    approvedFiles.textContent =
+      files.filter(file => file.status === "approved").length;
+  }
+
+
+  /* ======================================
+     EMPTY STATE
+     ====================================== */
+
+  if (files.length === 0) {
+
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8" class="empty-table">
+          No e-Files found.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  /* ======================================
+     FILE TABLE
+     ====================================== */
+
+  tableBody.innerHTML = files.map(file => {
+
+    const user =
+      VirtualEOfficeUsers.getUserById(file.currentUser);
+
+    const userName =
+      user ? user.name : file.currentUser || "--";
+
+    const statusName =
+      VirtualEOfficeFiles.getStatusName(file.status);
+
+    return `
+      <tr>
+
+        <td>
+          <strong>${file.fileNo}</strong>
+        </td>
+
+        <td>
+          ${file.date || "--"}
+        </td>
+
+        <td>
+          ${file.subject || "--"}
+        </td>
+
+        <td>
+          ${file.section || "--"}
+        </td>
+
+        <td>
+          ${file.receiptNo || "--"}
+        </td>
+
+        <td>
+          <span class="status-badge">
+            ${statusName}
+          </span>
+        </td>
+
+        <td>
+          ${userName}
+        </td>
+
+        <td>
+
+          <button
+            type="button"
+            class="text-button view-file-button"
+            data-file-id="${file.id}"
+          >
+            View
+          </button>
+
+        </td>
+
+      </tr>
+    `;
+
+  }).join("");
+
+
+  /* ======================================
+     VIEW BUTTONS
+     ====================================== */
+
+  document.querySelectorAll(".view-file-button")
+    .forEach(button => {
+
+      button.addEventListener("click", function () {
+
+        const fileId =
+          this.dataset.fileId;
+
+        showFileDetails(fileId);
+
+      });
+
+    });
+
+}
+
+
+/* ======================================
+   LOAD RECEIPTS INTO FILE FORM
+   ====================================== */
+
+function loadReceiptOptionsForFile() {
+
+  const receiptSelect =
+    document.getElementById("fileReceipt");
+
+  if (!receiptSelect) {
+    return;
+  }
+
+  const receipts =
+    VirtualEOfficeReceipts.getReceipts();
+
+  receiptSelect.innerHTML = `
+    <option value="">
+      -- No Receipt --
+    </option>
+  `;
+
+  receipts.forEach(receipt => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = receipt.id;
+
+    option.textContent =
+      `${receipt.receiptNo} — ${receipt.subject}`;
+
+    receiptSelect.appendChild(option);
+
+  });
+
+}
+
+
+/* ======================================
+   SHOW NEW FILE FORM
+   ====================================== */
+
+function showNewFileForm() {
+
+  const panel =
+    document.getElementById("fileFormPanel");
+
+  const detailsPanel =
+    document.getElementById("fileDetailsPanel");
+
+  if (detailsPanel) {
+    detailsPanel.classList.add("hidden");
+  }
+
+  if (panel) {
+    panel.classList.remove("hidden");
+  }
+
+  loadReceiptOptionsForFile();
+
+
+  /* Default date */
+
+  const dateInput =
+    document.getElementById("fileDate");
+
+  if (dateInput && !dateInput.value) {
+
+    const today =
+      new Date().toISOString().split("T")[0];
+
+    dateInput.value = today;
+
+  }
+
+}
+
+
+/* ======================================
+   HIDE NEW FILE FORM
+   ====================================== */
+
+function hideNewFileForm() {
+
+  const panel =
+    document.getElementById("fileFormPanel");
+
+  if (panel) {
+    panel.classList.add("hidden");
+  }
+
+}
+
+
+/* ======================================
+   CREATE NEW e-FILE
+   ====================================== */
+
+function saveNewEFile(event) {
+
+  event.preventDefault();
+
+  const message =
+    document.getElementById("fileFormMessage");
+
+  const currentUser =
+    localStorage.getItem("virtualEOfficeCurrentUser");
+
+  if (!currentUser) {
+
+    if (message) {
+      message.textContent =
+        "Please login before creating an e-File.";
+    }
+
+    return;
+  }
+
+
+  const fileNo =
+    document.getElementById("fileNo").value.trim();
+
+  const date =
+    document.getElementById("fileDate").value;
+
+  const section =
+    document.getElementById("fileSection").value.trim();
+
+  const category =
+    document.getElementById("fileCategory").value;
+
+  const priority =
+    document.getElementById("filePriority").value;
+
+  const receiptId =
+    document.getElementById("fileReceipt").value;
+
+  const subject =
+    document.getElementById("fileSubject").value.trim();
+
+  const description =
+    document.getElementById("fileDescription").value.trim();
+
+
+  /* ======================================
+     BASIC VALIDATION
+     ====================================== */
+
+  if (!fileNo || !date || !section || !subject) {
+
+    if (message) {
+      message.textContent =
+        "Please fill in all required fields.";
+    }
+
+    return;
+  }
+
+
+  /* ======================================
+     CHECK DUPLICATE FILE NUMBER
+     ====================================== */
+
+  if (VirtualEOfficeFiles.getFileByNumber(fileNo)) {
+
+    if (message) {
+      message.textContent =
+        "A file with this file number already exists.";
+    }
+
+    return;
+  }
+
+
+  /* ======================================
+     CREATE FILE
+     ====================================== */
+
+  const newFile =
+    VirtualEOfficeFiles.addFile({
+
+      fileNo: fileNo,
+
+      date: date,
+
+      subject: subject,
+
+      section: section,
+
+      category: category,
+
+      priority: priority,
+
+      status: "draft",
+
+      currentUser: currentUser,
+
+      createdBy: currentUser,
+
+      receiptId: receiptId || null,
+
+      description: description
+
+    });
+
+
+  /* ======================================
+     SUCCESS
+     ====================================== */
+
+  if (message) {
+
+    message.textContent =
+      `e-File ${newFile.fileNo} created successfully.`;
+
+  }
+
+
+  /* Refresh */
+
+  loadEFiles();
+
+
+  /* Reset form */
+
+  document.getElementById("fileForm").reset();
+
+
+  /* Hide form after short delay */
+
+  setTimeout(() => {
+
+    hideNewFileForm();
+
+    if (message) {
+      message.textContent = "";
+    }
+
+  }, 800);
+
+}
+
+
+/* ======================================
+   SEARCH e-FILES
+   ====================================== */
+
+function searchEFiles() {
+
+  const searchInput =
+    document.getElementById("fileSearch");
+
+  const tableBody =
+    document.getElementById("filesTableBody");
+
+  if (!searchInput || !tableBody) {
+    return;
+  }
+
+  const searchTerm =
+    searchInput.value.trim().toLowerCase();
+
+  const files =
+    VirtualEOfficeFiles.getFiles();
+
+  const filteredFiles =
+    files.filter(file => {
+
+      return (
+
+        (file.fileNo || "")
+          .toLowerCase()
+          .includes(searchTerm)
+
+        ||
+
+        (file.subject || "")
+          .toLowerCase()
+          .includes(searchTerm)
+
+        ||
+
+        (file.section || "")
+          .toLowerCase()
+          .includes(searchTerm)
+
+      );
+
+    });
+
+
+  /* ======================================
+     EMPTY SEARCH RESULT
+     ====================================== */
+
+  if (filteredFiles.length === 0) {
+
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8" class="empty-table">
+          No matching e-Files found.
+        </td>
+      </tr>
+    `;
+
+    return;
+
+  }
+
+
+  /* ======================================
+     DISPLAY SEARCH RESULTS
+     ====================================== */
+
+  tableBody.innerHTML =
+    filteredFiles.map(file => {
+
+      const user =
+        VirtualEOfficeUsers.getUserById(file.currentUser);
+
+      const userName =
+        user ? user.name : file.currentUser || "--";
+
+      const statusName =
+        VirtualEOfficeFiles.getStatusName(file.status);
+
+      return `
+        <tr>
+
+          <td>
+            <strong>${file.fileNo}</strong>
+          </td>
+
+          <td>
+            ${file.date || "--"}
+          </td>
+
+          <td>
+            ${file.subject || "--"}
+          </td>
+
+          <td>
+            ${file.section || "--"}
+          </td>
+
+          <td>
+            ${file.receiptNo || "--"}
+          </td>
+
+          <td>
+            <span class="status-badge">
+              ${statusName}
+            </span>
+          </td>
+
+          <td>
+            ${userName}
+          </td>
+
+          <td>
+
+            <button
+              type="button"
+              class="text-button view-file-button"
+              data-file-id="${file.id}"
+            >
+              View
+            </button>
+
+          </td>
+
+        </tr>
+      `;
+
+    }).join("");
+
+
+  /* Reconnect View buttons */
+
+  document.querySelectorAll(".view-file-button")
+    .forEach(button => {
+
+      button.addEventListener("click", function () {
+
+        showFileDetails(this.dataset.fileId);
+
+      });
+
+    });
+
+}
+
+
+/* ======================================
+   SHOW FILE DETAILS
+   ====================================== */
+
+function showFileDetails(fileId) {
+
+  const file =
+    VirtualEOfficeFiles.getFileById(fileId);
+
+  if (!file) {
+    return;
+  }
+
+
+  const user =
+    VirtualEOfficeUsers.getUserById(file.currentUser);
+
+  const creator =
+    VirtualEOfficeUsers.getUserById(file.createdBy);
+
+
+  const userName =
+    user ? user.name : file.currentUser || "--";
+
+  const creatorName =
+    creator ? creator.name : file.createdBy || "--";
+
+
+  document.getElementById("fileDetailsTitle")
+    .textContent = file.fileNo;
+
+  document.getElementById("fileDetailsSubject")
+    .textContent = file.subject || "--";
+
+  document.getElementById("detailFileNo")
+    .textContent = file.fileNo || "--";
+
+  document.getElementById("detailFileDate")
+    .textContent = file.date || "--";
+
+  document.getElementById("detailFileSection")
+    .textContent = file.section || "--";
+
+  document.getElementById("detailFilePriority")
+    .textContent = file.priority || "--";
+
+  document.getElementById("detailFileStatus")
+    .textContent =
+      VirtualEOfficeFiles.getStatusName(file.status);
+
+  document.getElementById("detailFileUser")
+    .textContent = userName;
+
+  document.getElementById("detailFileReceipt")
+    .textContent =
+      file.receiptNo || "--";
+
+  document.getElementById("detailFileCreator")
+    .textContent = creatorName;
+
+  document.getElementById("detailFileDescription")
+    .textContent =
+      file.description || "No description provided.";
+
+
+  /* Show details */
+
+  document.getElementById("fileDetailsPanel")
+    .classList.remove("hidden");
+
+  document.getElementById("fileFormPanel")
+    .classList.add("hidden");
+
+
+  /* Scroll to details */
+
+  document.getElementById("fileDetailsPanel")
+    .scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+}
+
+
+/* ======================================
+   CLOSE FILE DETAILS
+   ====================================== */
+
+function closeFileDetails() {
+
+  const panel =
+    document.getElementById("fileDetailsPanel");
+
+  if (panel) {
+    panel.classList.add("hidden");
+  }
+
+}
+
+
+/* ======================================
+   e-FILE EVENT HANDLERS
+   ====================================== */
+
+const newFileButton =
+  document.getElementById("newFileButton");
+
+if (newFileButton) {
+
+  newFileButton.addEventListener(
+    "click",
+    showNewFileForm
+  );
+
+}
+
+
+const cancelFileButton =
+  document.getElementById("cancelFileButton");
+
+if (cancelFileButton) {
+
+  cancelFileButton.addEventListener(
+    "click",
+    hideNewFileForm
+  );
+
+}
+
+
+const closeFileDetailsButton =
+  document.getElementById("closeFileDetailsButton");
+
+if (closeFileDetailsButton) {
+
+  closeFileDetailsButton.addEventListener(
+    "click",
+    closeFileDetails
+  );
+
+}
+
+
+const fileForm =
+  document.getElementById("fileForm");
+
+if (fileForm) {
+
+  fileForm.addEventListener(
+    "submit",
+    saveNewEFile
+  );
+
+}
+
+
+const fileSearch =
+  document.getElementById("fileSearch");
+
+if (fileSearch) {
+
+  fileSearch.addEventListener(
+    "input",
+    searchEFiles
+  );
+
+}
+
+
+/* ======================================
+   INITIAL LOAD
+   ====================================== */
+
+loadEFiles();
 });
