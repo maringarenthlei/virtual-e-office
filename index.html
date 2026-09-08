@@ -5,48 +5,1174 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Virtual e-Office</title>
+  <title>Virtual e-Office | Training Simulator</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <main>
-    <section>
+  <!-- ==========================================
+       LOGIN SCREEN
+       ========================================== -->
+
+  <div id="loginScreen" class="login-screen">
+
+    <div class="login-card">
+
+      <div class="login-logo">
+        <div class="logo-box">eO</div>
+      </div>
+
       <h1>Virtual e-Office</h1>
-      <p>Learning &amp; Training Simulator</p>
+
+      <p class="login-subtitle">
+        Learning &amp; Training Simulator
+      </p>
 
       <form id="loginForm">
 
-        <div>
+        <div class="form-group">
           <label for="username">Username</label>
+
           <input
             type="text"
             id="username"
             name="username"
             placeholder="Enter username"
+            autocomplete="username"
             required
           >
         </div>
 
-        <div>
+        <div class="form-group">
           <label for="password">Password</label>
+
           <input
             type="password"
             id="password"
             name="password"
             placeholder="Enter password"
+            autocomplete="current-password"
             required
           >
         </div>
 
-        <button type="submit">Login</button>
+        <div class="form-group">
+          <label for="role">Training Role</label>
+
+          <select id="role" name="role">
+
+            <option value="dealing-assistant">
+              Dealing Assistant
+            </option>
+
+            <option value="section-officer">
+              Section Officer
+            </option>
+
+            <option value="under-secretary">
+              Under Secretary
+            </option>
+
+            <option value="director">
+              Director
+            </option>
+
+          </select>
+        </div>
+
+        <button type="submit" class="login-button">
+          Login
+        </button>
+
+        <p id="loginMessage" class="login-message"></p>
 
       </form>
 
-      <p id="loginMessage"></p>
-    </section>
-  </main>
+      <div class="training-notice">
+        <strong>Training Environment</strong>
+        <span>
+          This is a fictional simulator for learning e-Office
+          procedures. No real government data is used.
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================
+       MAIN APPLICATION
+       ========================================== -->
+
+  <div id="app" class="app hidden">
+
+    <!-- TOP HEADER -->
+
+    <header class="top-header">
+
+      <div class="header-left">
+
+        <button
+          id="sidebarToggle"
+          class="sidebar-toggle"
+          type="button"
+          aria-label="Toggle navigation"
+        >
+          ☰
+        </button>
+
+        <div class="brand">
+
+          <div class="brand-logo">
+            eO
+          </div>
+
+          <div>
+            <h2>Virtual e-Office</h2>
+            <span>Training Simulator</span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="header-right">
+
+        <div class="training-badge">
+          TRAINING MODE
+        </div>
+
+        <div class="user-menu">
+
+          <div class="user-avatar" id="userAvatar">
+            U
+          </div>
+
+          <div class="user-details">
+
+            <strong id="displayUsername">
+              User
+            </strong>
+
+            <span id="displayRole">
+              Dealing Assistant
+            </span>
+
+          </div>
+
+        </div>
+
+        <button
+          id="logoutButton"
+          class="logout-button"
+          type="button"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- APPLICATION BODY -->
+
+    <div class="app-body">
+
+
+      <!-- SIDEBAR -->
+
+      <aside id="sidebar" class="sidebar">
+
+        <nav>
+
+          <div class="nav-section-title">
+            MAIN
+          </div>
+
+          <button
+            class="nav-item active"
+            data-page="dashboard"
+            type="button"
+          >
+            <span class="nav-icon">⌂</span>
+            <span>Dashboard</span>
+          </button>
+
+
+          <div class="nav-section-title">
+            e-OFFICE
+          </div>
+
+          <button
+            class="nav-item"
+            data-page="receipt"
+            type="button"
+          >
+            <span class="nav-icon">✉</span>
+            <span>Receipt / Dak</span>
+            <span class="nav-count">12</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="efile"
+            type="button"
+          >
+            <span class="nav-icon">▣</span>
+            <span>e-Files</span>
+            <span class="nav-count">8</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="notes"
+            type="button"
+          >
+            <span class="nav-icon">☷</span>
+            <span>Notes</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="drafts"
+            type="button"
+          >
+            <span class="nav-icon">✎</span>
+            <span>Drafts</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="dispatch"
+            type="button"
+          >
+            <span class="nav-icon">➜</span>
+            <span>Dispatch</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="search"
+            type="button"
+          >
+            <span class="nav-icon">⌕</span>
+            <span>Search</span>
+          </button>
+
+
+          <div class="nav-section-title">
+            TRAINING
+          </div>
+
+          <button
+            class="nav-item"
+            data-page="scenarios"
+            type="button"
+          >
+            <span class="nav-icon">★</span>
+            <span>Training Scenarios</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-page="help"
+            type="button"
+          >
+            <span class="nav-icon">?</span>
+            <span>Help &amp; Guide</span>
+          </button>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+          <div class="system-status">
+            <span class="status-dot"></span>
+            Simulator Online
+          </div>
+
+          <small>
+            Virtual e-Office v1.0
+          </small>
+
+        </div>
+
+      </aside>
+
+
+      <!-- MAIN CONTENT -->
+
+      <main class="main-content">
+
+        <!-- ======================================
+             DASHBOARD
+             ====================================== -->
+
+        <section id="page-dashboard" class="page active-page">
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Dashboard
+              </div>
+
+              <h1>Dashboard</h1>
+
+              <p>
+                Welcome to the Virtual e-Office training environment.
+              </p>
+
+            </div>
+
+            <div class="date-display" id="currentDate">
+              --
+            </div>
+
+          </div>
+
+
+          <!-- STATISTICS -->
+
+          <div class="dashboard-stats">
+
+            <div class="stat-card">
+
+              <div class="stat-icon receipt-icon">
+                ✉
+              </div>
+
+              <div class="stat-info">
+
+                <span>
+                  Pending Receipts
+                </span>
+
+                <strong>
+                  12
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+              <div class="stat-icon file-icon">
+                ▣
+              </div>
+
+              <div class="stat-info">
+
+                <span>
+                  Active e-Files
+                </span>
+
+                <strong>
+                  8
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+              <div class="stat-icon note-icon">
+                ☷
+              </div>
+
+              <div class="stat-info">
+
+                <span>
+                  Pending Notes
+                </span>
+
+                <strong>
+                  4
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+              <div class="stat-icon draft-icon">
+                ✎
+              </div>
+
+              <div class="stat-info">
+
+                <span>
+                  Drafts
+                </span>
+
+                <strong>
+                  3
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- DASHBOARD GRID -->
+
+          <div class="dashboard-grid">
+
+
+            <!-- RECENT FILES -->
+
+            <div class="panel">
+
+              <div class="panel-header">
+
+                <div>
+
+                  <h2>Recent Files</h2>
+
+                  <p>
+                    Recently accessed training files
+                  </p>
+
+                </div>
+
+                <button
+                  class="text-button"
+                  data-page-link="efile"
+                  type="button"
+                >
+                  View All
+                </button>
+
+              </div>
+
+
+              <div class="table-wrapper">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+
+                      <th>File No.</th>
+                      <th>Subject</th>
+                      <th>Status</th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr>
+
+                      <td>
+                        HTE/EDU/2026/001
+                      </td>
+
+                      <td>
+                        Request for Computer Systems
+                      </td>
+
+                      <td>
+                        <span class="status pending">
+                          Pending
+                        </span>
+                      </td>
+
+                    </tr>
+
+                    <tr>
+
+                      <td>
+                        HTE/ADM/2026/014
+                      </td>
+
+                      <td>
+                        Training Programme Proposal
+                      </td>
+
+                      <td>
+                        <span class="status forwarded">
+                          Forwarded
+                        </span>
+                      </td>
+
+                    </tr>
+
+                    <tr>
+
+                      <td>
+                        HTE/IT/2026/022
+                      </td>
+
+                      <td>
+                        ICT Equipment Requirement
+                      </td>
+
+                      <td>
+                        <span class="status approved">
+                          Approved
+                        </span>
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="panel">
+
+              <div class="panel-header">
+
+                <div>
+
+                  <h2>Quick Actions</h2>
+
+                  <p>
+                    Common office tasks
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div class="quick-actions">
+
+                <button
+                  class="quick-action"
+                  data-page-link="receipt"
+                  type="button"
+                >
+
+                  <span class="quick-icon">
+                    ✉
+                  </span>
+
+                  <span>
+
+                    <strong>
+                      Open Receipt
+                    </strong>
+
+                    <small>
+                      View incoming dak
+                    </small>
+
+                  </span>
+
+                </button>
+
+
+                <button
+                  class="quick-action"
+                  data-page-link="efile"
+                  type="button"
+                >
+
+                  <span class="quick-icon">
+                    ▣
+                  </span>
+
+                  <span>
+
+                    <strong>
+                      Create e-File
+                    </strong>
+
+                    <small>
+                      Start a new file
+                    </small>
+
+                  </span>
+
+                </button>
+
+
+                <button
+                  class="quick-action"
+                  data-page-link="notes"
+                  type="button"
+                >
+
+                  <span class="quick-icon">
+                    ☷
+                  </span>
+
+                  <span>
+
+                    <strong>
+                      Prepare Note
+                    </strong>
+
+                    <small>
+                      Create a file note
+                    </small>
+
+                  </span>
+
+                </button>
+
+
+                <button
+                  class="quick-action"
+                  data-page-link="scenarios"
+                  type="button"
+                >
+
+                  <span class="quick-icon">
+                    ★
+                  </span>
+
+                  <span>
+
+                    <strong>
+                      Start Training
+                    </strong>
+
+                    <small>
+                      Practice a workflow
+                    </small>
+
+                  </span>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- TRAINING PROGRESS -->
+
+          <div class="panel training-progress-panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <h2>Training Progress</h2>
+
+                <p>
+                  Your progress through the e-Office learning modules
+                </p>
+
+              </div>
+
+              <strong class="progress-percentage">
+                15%
+              </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-fill"
+                style="width: 15%;"
+              ></div>
+
+            </div>
+
+
+            <div class="progress-items">
+
+              <span class="completed">
+                ✓ Computer Basics
+              </span>
+
+              <span class="completed">
+                ✓ Login &amp; Navigation
+              </span>
+
+              <span>
+                ○ Receipt / Dak
+              </span>
+
+              <span>
+                ○ e-File
+              </span>
+
+              <span>
+                ○ Note &amp; Draft
+              </span>
+
+              <span>
+                ○ File Movement
+              </span>
+
+              <span>
+                ○ Approval &amp; Dispatch
+              </span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ======================================
+             FUTURE MODULE PAGES
+             ====================================== -->
+
+        <section
+          id="page-receipt"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Receipt / Dak
+              </div>
+
+              <h1>Receipt / Dak</h1>
+
+              <p>
+                Manage incoming government correspondence.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ✉
+            </div>
+
+            <h2>Receipt / Dak Module</h2>
+
+            <p>
+              This training module will allow you to receive,
+              register, view and process incoming receipts.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-efile"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / e-Files
+              </div>
+
+              <h1>e-Files</h1>
+
+              <p>
+                Create and manage electronic files.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ▣
+            </div>
+
+            <h2>e-File Module</h2>
+
+            <p>
+              This module will simulate creation, processing
+              and movement of electronic files.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-notes"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Notes
+              </div>
+
+              <h1>Notes</h1>
+
+              <p>
+                Prepare and process file notes.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ☷
+            </div>
+
+            <h2>Note Module</h2>
+
+            <p>
+              Practice preparing, saving and submitting official notes.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-drafts"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Drafts
+              </div>
+
+              <h1>Drafts</h1>
+
+              <p>
+                Prepare official drafts for approval and dispatch.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ✎
+            </div>
+
+            <h2>Draft Module</h2>
+
+            <p>
+              Practice creating and processing official correspondence.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-dispatch"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Dispatch
+              </div>
+
+              <h1>Dispatch</h1>
+
+              <p>
+                Process approved correspondence for dispatch.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ➜
+            </div>
+
+            <h2>Dispatch Module</h2>
+
+            <p>
+              Practice dispatching approved documents and tracking
+              outgoing correspondence.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-search"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Search
+              </div>
+
+              <h1>Search</h1>
+
+              <p>
+                Search training files, receipts and correspondence.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="empty-module">
+
+            <div class="empty-icon">
+              ⌕
+            </div>
+
+            <h2>Search Module</h2>
+
+            <p>
+              Search functionality will be added as the training
+              data model is developed.
+            </p>
+
+            <span class="module-label">
+              MODULE UNDER DEVELOPMENT
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-scenarios"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Training Scenarios
+              </div>
+
+              <h1>Training Scenarios</h1>
+
+              <p>
+                Practice complete e-Office workflows using fictional cases.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="scenario-intro">
+
+            <h2>Choose a Training Exercise</h2>
+
+            <p>
+              Start with a beginner exercise and gradually progress
+              to complete file processing.
+            </p>
+
+          </div>
+
+
+          <div class="scenario-grid">
+
+            <div class="scenario-card">
+
+              <span class="scenario-level beginner">
+                BEGINNER
+              </span>
+
+              <h3>Process a Receipt</h3>
+
+              <p>
+                Register an incoming receipt and attach it to
+                the appropriate e-File.
+              </p>
+
+              <button
+                class="secondary-button"
+                type="button"
+              >
+                Coming Soon
+              </button>
+
+            </div>
+
+
+            <div class="scenario-card">
+
+              <span class="scenario-level intermediate">
+                INTERMEDIATE
+              </span>
+
+              <h3>Prepare a File Note</h3>
+
+              <p>
+                Create an e-File, prepare a note and submit it
+                to the appropriate officer.
+              </p>
+
+              <button
+                class="secondary-button"
+                type="button"
+              >
+                Coming Soon
+              </button>
+
+            </div>
+
+
+            <div class="scenario-card">
+
+              <span class="scenario-level advanced">
+                ADVANCED
+              </span>
+
+              <h3>Complete File Processing</h3>
+
+              <p>
+                Process a government case from receipt through
+                note, draft, approval and dispatch.
+              </p>
+
+              <button
+                class="secondary-button"
+                type="button"
+              >
+                Coming Soon
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section
+          id="page-help"
+          class="page"
+        >
+
+          <div class="page-header">
+
+            <div>
+
+              <div class="breadcrumb">
+                Home / Help &amp; Guide
+              </div>
+
+              <h1>Help &amp; Guide</h1>
+
+              <p>
+                Learn how to use the Virtual e-Office simulator.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="help-panel">
+
+            <h2>About this Simulator</h2>
+
+            <p>
+              Virtual e-Office is a fictional training environment
+              designed to help users practice electronic office
+              procedures before working with a real e-Office system.
+            </p>
+
+            <h3>Important</h3>
+
+            <p>
+              This application does not connect to any government
+              e-Office system and does not contain real government data.
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <!-- JavaScript -->
 
   <script src="script.js"></script>
 
