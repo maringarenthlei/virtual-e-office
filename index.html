@@ -1860,7 +1860,137 @@
 
 
   </div>
+<!-- ======================================
+     NOTE SHEET
+     ====================================== -->
 
+<div class="file-notes-section">
+
+  <div class="section-header">
+
+    <div>
+
+      <h3>
+        Note Sheet
+      </h3>
+
+      <p>
+        Notes recorded during processing of this e-File.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      id="addNoteButton"
+      class="login-button"
+    >
+      + Add Note
+    </button>
+
+  </div>
+
+
+  <!-- ======================================
+       NOTE LIST
+       ====================================== -->
+
+  <div
+    id="fileNotesList"
+    class="file-notes-list"
+  >
+
+    <!-- Notes will be loaded here -->
+
+  </div>
+
+
+  <!-- ======================================
+       ADD NOTE FORM
+       ====================================== -->
+
+  <div
+    id="noteFormPanel"
+    class="note-form-panel hidden"
+  >
+
+    <h4>
+      Add New Note
+    </h4>
+
+
+    <form id="noteForm">
+
+      <div class="form-grid">
+
+
+        <!-- NOTE DATE -->
+
+        <div class="form-group">
+
+          <label for="noteDate">
+            Date
+          </label>
+
+          <input
+            type="date"
+            id="noteDate"
+            required
+          >
+
+        </div>
+
+
+        <!-- NOTE TEXT -->
+
+        <div class="form-group form-group-wide">
+
+          <label for="noteText">
+            Note
+          </label>
+
+          <textarea
+            id="noteText"
+            rows="6"
+            placeholder="Enter the note..."
+            required
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          id="cancelNoteButton"
+          class="text-button"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="login-button"
+        >
+          Save Note
+        </button>
+
+      </div>
+
+
+      <p
+        id="noteFormMessage"
+        class="login-message"
+      ></p>
+
+    </form>
+
+  </div>
+
+</div>
 </section>
 
 
