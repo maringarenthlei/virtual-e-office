@@ -1715,3 +1715,86 @@ body.sidebar-collapsed .system-status {
 
   font-size: 10px;
 }
+
+/* ============================================
+   File Movement / Processing History
+   ============================================ */
+
+.file-movement-section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.file-movement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.movement-card {
+  display: flex;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.movement-date {
+  min-width: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.movement-date strong {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.movement-content {
+  flex: 1;
+}
+
+.movement-action strong {
+  color: var(--primary);
+  font-size: 13px;
+}
+
+.movement-users {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.movement-arrow {
+  color: var(--text-light);
+  font-weight: bold;
+}
+
+.movement-remarks {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .movement-card {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .movement-date {
+    min-width: auto;
+    flex-direction: row;
+    gap: 8px;
+  }
+}
