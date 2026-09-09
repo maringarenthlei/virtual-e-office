@@ -1643,7 +1643,8 @@ function searchEFiles() {
 
 function showFileDetails(fileId) {
      currentNoteFileId = fileId;
-
+      loadFileNotes(fileId);
+      loadFileMovements(fileId);
   const file =
     VirtualEOfficeFiles.getFileById(fileId);
 
