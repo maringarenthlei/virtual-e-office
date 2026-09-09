@@ -1642,6 +1642,7 @@ function searchEFiles() {
    ====================================== */
 
 function showFileDetails(fileId) {
+     currentNoteFileId = fileId;
 
   const file =
     VirtualEOfficeFiles.getFileById(fileId);
@@ -1719,6 +1720,7 @@ function showFileDetails(fileId) {
       block: "start"
     });
 
+loadFileNotes(fileId);
 }
 
 
@@ -1812,4 +1814,395 @@ if (fileSearch) {
    ====================================== */
 
 loadEFiles();
+   /* ======================================
+   NOTE SHEET MANAGEMENT
+   ====================================== */
+
+let currentNoteFileId = null;
+
+
+/* ======================================
+   LOAD NOTES FOR FILE
+   ====================================== */
+
+function loadFileNotes(fileId) {
+
+  const notesList =
+    document.getElementById("fileNotesList");
+
+  if (!notesList) {
+    return;
+  }
+
+
+  const notes =
+    VirtualEOfficeNotes.getNotesByFile(fileId);
+
+
+  /* ======================================
+     EMPTY STATE
+     ====================================== */
+
+  if (notes.length === 0) {
+
+    notesList.innerHTML = `
+      <div class="empty-module">
+
+        <div class="empty-icon">
+          ▤
+        </div>
+
+        <p>
+          No notes have been added to this file.
+        </p>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  /* ======================================
+     DISPLAY NOTES
+     ====================================== */
+
+  notesList.innerHTML =
+    notes.map(note => {
+
+      const author =
+        VirtualEOfficeUsers.getUserById(
+          note.authorId
+        );
+
+      const authorName =
+        author
+          ? author.name
+          : note.authorId || "--";
+
+
+      return `
+        <div class="note-card">
+
+          <div class="note-header">
+
+            <div>
+
+              <strong>
+                Note No. ${note.noteNo}
+              </strong>
+
+              <span>
+                ${note.date || "--"}
+              </span>
+
+            </div>
+
+            <span class="note-author">
+              ${authorName}
+            </span>
+
+          </div>
+
+
+          <div class="note-body">
+
+            ${note.text}
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+/* ======================================
+   SHOW ADD NOTE FORM
+   ====================================== */
+
+function showAddNoteForm() {
+
+  if (!currentNoteFileId) {
+    return;
+  }
+
+
+  const panel =
+    document.getElementById("noteFormPanel");
+
+  if (!panel) {
+    return;
+  }
+
+
+  panel.classList.remove("hidden");
+
+
+  const dateInput =
+    document.getElementById("noteDate");
+
+  if (dateInput && !dateInput.value) {
+
+    dateInput.value =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+  }
+
+
+  const textInput =
+    document.getElementById("noteText");
+
+  if (textInput) {
+    textInput.focus();
+  }
+
+}
+
+
+/* ======================================
+   HIDE ADD NOTE FORM
+   ====================================== */
+
+function hideAddNoteForm() {
+
+  const panel =
+    document.getElementById("noteFormPanel");
+
+  if (panel) {
+    panel.classList.add("hidden");
+  }
+
+
+  const form =
+    document.getElementById("noteForm");
+
+  if (form) {
+    form.reset();
+  }
+
+
+  const message =
+    document.getElementById("noteFormMessage");
+
+  if (message) {
+    message.textContent = "";
+  }
+
+}
+
+
+/* ======================================
+   SAVE NOTE
+   ====================================== */
+
+function saveNewNote(event) {
+
+  event.preventDefault();
+
+
+  const message =
+    document.getElementById("noteFormMessage");
+
+
+  const currentUser =
+    localStorage.getItem(
+      "virtualEOfficeCurrentUser"
+    );
+
+
+  if (!currentUser) {
+
+    if (message) {
+
+      message.textContent =
+        "Please login before adding a note.";
+
+    }
+
+    return;
+
+  }
+
+
+  if (!currentNoteFileId) {
+
+    if (message) {
+
+      message.textContent =
+        "No e-File has been selected.";
+
+    }
+
+    return;
+
+  }
+
+
+  const noteDate =
+    document.getElementById("noteDate")
+      .value;
+
+
+  const noteText =
+    document.getElementById("noteText")
+      .value
+      .trim();
+
+
+  /* ======================================
+     VALIDATION
+     ====================================== */
+
+  if (!noteDate || !noteText) {
+
+    if (message) {
+
+      message.textContent =
+        "Please enter the date and note.";
+
+    }
+
+    return;
+
+  }
+
+
+  /* ======================================
+     CREATE NOTE
+     ====================================== */
+
+  try {
+
+    VirtualEOfficeNotes.addNote({
+
+      fileId:
+        currentNoteFileId,
+
+      date:
+        noteDate,
+
+      authorId:
+        currentUser,
+
+      text:
+        noteText
+
+    });
+
+
+    /* Refresh note list */
+
+    loadFileNotes(
+      currentNoteFileId
+    );
+
+
+    if (message) {
+
+      message.textContent =
+        "Note added successfully.";
+
+    }
+
+
+    /* Reset form */
+
+    document.getElementById(
+      "noteForm"
+    ).reset();
+
+
+    /* Set current date again */
+
+    document.getElementById(
+      "noteDate"
+    ).value =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    /* Hide after short delay */
+
+    setTimeout(() => {
+
+      hideAddNoteForm();
+
+    }, 700);
+
+
+  } catch (error) {
+
+    console.error(
+      "Unable to save note:",
+      error
+    );
+
+
+    if (message) {
+
+      message.textContent =
+        error.message ||
+        "Unable to save note.";
+
+    }
+
+  }
+
+}
+
+
+/* ======================================
+   EVENT HANDLERS
+   ====================================== */
+
+const addNoteButton =
+  document.getElementById(
+    "addNoteButton"
+  );
+
+if (addNoteButton) {
+
+  addNoteButton.addEventListener(
+    "click",
+    showAddNoteForm
+  );
+
+}
+
+
+const cancelNoteButton =
+  document.getElementById(
+    "cancelNoteButton"
+  );
+
+if (cancelNoteButton) {
+
+  cancelNoteButton.addEventListener(
+    "click",
+    hideAddNoteForm
+  );
+
+}
+
+
+const noteForm =
+  document.getElementById(
+    "noteForm"
+  );
+
+if (noteForm) {
+
+  noteForm.addEventListener(
+    "submit",
+    saveNewNote
+  );
+
+}
 });
