@@ -1833,7 +1833,89 @@ function loadFileNotes(fileId) {
   if (!notesList) {
     return;
   }
+function loadFileMovements(fileId) {
+  const movementList = document.getElementById("fileMovementList");
 
+  if (!movementList) {
+    return;
+  }
+
+  const movements =
+    VirtualEOfficeMovements.getMovementsByFile(fileId);
+
+  if (movements.length === 0) {
+    movementList.innerHTML = `
+      <div class="empty-module">
+        <p>No movement history available for this file.</p>
+      </div>
+    `;
+    return;
+  }
+
+  movementList.innerHTML = movements
+    .map(movement => {
+      const fromUser = movement.fromUserId
+        ? VirtualEOfficeUsers.getUserById(movement.fromUserId)
+        : null;
+
+      const toUser = movement.toUserId
+        ? VirtualEOfficeUsers.getUserById(movement.toUserId)
+        : null;
+
+      const fromName = fromUser
+        ? fromUser.name
+        : movement.fromUserId || "";
+
+      const toName = toUser
+        ? toUser.name
+        : movement.toUserId || "";
+
+      let movementDirection = "";
+
+      if (fromName && toName) {
+        movementDirection = `
+          <span>${fromName}</span>
+          <span class="movement-arrow">→</span>
+          <span>${toName}</span>
+        `;
+      } else if (toName) {
+        movementDirection = `
+          <span>${toName}</span>
+        `;
+      } else if (fromName) {
+        movementDirection = `
+          <span>${fromName}</span>
+        `;
+      }
+
+      return `
+        <div class="movement-card">
+          <div class="movement-date">
+            <strong>${movement.date}</strong>
+            <span>${movement.time || "--:--"}</span>
+          </div>
+
+          <div class="movement-content">
+            <div class="movement-action">
+              <strong>${movement.action}</strong>
+            </div>
+
+            <div class="movement-users">
+              ${movementDirection}
+            </div>
+
+            ${
+              movement.remarks
+                ? `<div class="movement-remarks">${movement.remarks}</div>`
+                : ""
+            }
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+   
 
   const notes =
     VirtualEOfficeNotes.getNotesByFile(fileId);
