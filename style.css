@@ -1689,3 +1689,29 @@ body.sidebar-collapsed .system-status {
   }
 
 }
+
+/* ==========================================
+   NOTE AUTHOR DETAILS
+   ========================================== */
+
+.note-author {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 2px;
+}
+
+.note-author strong {
+  color: var(--primary);
+
+  font-size: 12px;
+}
+
+.note-author span {
+  color: var(--text-light);
+
+  font-size: 10px;
+}
