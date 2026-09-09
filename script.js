@@ -2010,11 +2010,33 @@ function saveNewNote(event) {
     document.getElementById("noteFormMessage");
 
 
-  const currentUser =
-    localStorage.getItem(
-      "virtualEOfficeCurrentUser"
+  const savedUser =
+  localStorage.getItem(
+    "virtualEOfficeUser"
+  );
+
+let currentUser = null;
+
+if (savedUser) {
+
+  try {
+
+    const user =
+      JSON.parse(savedUser);
+
+    currentUser =
+      user.username;
+
+  } catch (error) {
+
+    console.error(
+      "Unable to read logged-in user:",
+      error
     );
 
+  }
+
+}
 
   if (!currentUser) {
 
