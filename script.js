@@ -1876,10 +1876,20 @@ function loadFileNotes(fileId) {
           note.authorId
         );
 
-      const authorName =
-        author
-          ? author.name
-          : note.authorId || "--";
+const authorName =
+  author
+    ? author.name
+    : note.authorId || "--";
+
+const authorRole =
+  author
+    ? VirtualEOfficeUsers.getRoleName(author.role)
+    : "--";
+
+const authorDepartment =
+  author
+    ? author.department
+    : "--";
 
 
       return `
@@ -1899,10 +1909,17 @@ function loadFileNotes(fileId) {
 
             </div>
 
-            <span class="note-author">
-              ${authorName}
-            </span>
+<div class="note-author">
 
+  <strong>
+    ${authorName}
+  </strong>
+
+  <span>
+    ${authorRole} · ${authorDepartment}
+  </span>
+
+</div>
           </div>
 
 
